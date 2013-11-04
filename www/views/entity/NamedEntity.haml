@@ -1,0 +1,20 @@
+%header NamedEntity
+
+%dl
+  %dt Literal string
+  %dd= entity
+
+  %dt Type
+  %dd= entity.type
+
+  %dt Code
+  %dd
+    - format, code = entity.code.split(":")
+    - code, format = format, entity.type if code.nil?
+    - code = Misc.prepare_entity(code, format, :organism => "Hsa/jun2011")
+    - if code.respond_to? :link
+      = code.link
+    - else
+      = entity.code
+
+

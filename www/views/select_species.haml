@@ -1,0 +1,32 @@
+- pmid = params[:pmid]
+- article = PMID.setup(pmid)
+-# species_mentions = TextMining.job(:species_mention_recognition, "Factoid", :text => article.text(:best)).run
+- species_mentions = article.species
+
+- species_mentioned = {}
+- species_mentions.each{|mention| species = mention.code; species.each{|specie| species_mentioned[specie] ||= []; species_mentioned[specie] << mention }}
+
+
+%form(action="#{File.join('/select_species', pmid)}" method='POST')
+  %dl
+    - found = []
+    - species_mentioned.each do |specie, mentions|
+      - organism = specie
+      - next unless organism =~ /^[A-Z][a-z]{2}$/
+      -# taxid = specie.split(":").last
+      -# begin
+      -# - organism = Organism.entrez_taxid_organism(taxid)
+      -# rescue
+      -# - next
+      - found  << organism
+      %dt
+        = Organism.scientific_name(organism)
+        %input(type="checkbox" name=organism checked="checked")
+      %dd== Mentions found: #{ mentions.uniq * ", " }
+    - (Organism.installable_organisms - found).each do |organism|
+      %dt
+        = Organism.scientific_name(organism)
+        %input(type="checkbox" name=organism)
+      %dd== No mentions found
+
+  %input(type="submit")

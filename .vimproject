@@ -1,0 +1,30 @@
+factoid=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass *.txt *.conf" {
+ workflow.rb
+ lib=lib {
+  factoid.rb
+  sinatra.rb
+ }
+ test=test {
+  test_helper.rb
+  test_knowledge_base.rb
+ }
+ www=www{
+  views=views{
+   select_species.haml
+   select_organism_mentions.haml
+   done.haml
+   entity=entity{
+    NamedEntity.haml
+   }
+   abner=abner{
+    result.haml
+   }
+   banner=banner{
+    result.haml
+   }
+   sentence_html=sentence_html{
+    result.haml
+   }
+  }
+ }
+}

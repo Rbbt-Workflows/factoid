@@ -1,0 +1,33 @@
+%header== Mentions for #{ Organism.scientific_name(organism) } in #{pmid}
+
+- sentences = article.sentences
+- sentence_index = Segment.index(sentences)
+
+%form(action="#{File.join('/select_organism_mentions', pmid)}" method='POST')
+  %input(type='hidden' name='organism' value=organism)
+  %dl
+    - mentions.each do |mention|
+      - format, code = mention.code.split(":")
+      - format ||= "Ensembl Gene ID"
+      - gene = Gene.setup(code, format, organism)
+      - sentence = sentence_index[mention.range].first
+      - sentence
+      %dt
+        = gene.link
+        %input(type="checkbox" name="#{mention.id}" checked="checked")
+      %dd
+        - if sentence
+          = Transformed.transform(sentence, [mention]) do |gene|
+            - if code.nil?
+              - gene.html
+            - else
+              - norm =  Gene.setup(code, format, organism)
+              - if norm.name === gene
+                -# norm.link(nil, :html_link_extra_attrs => "title='#{gene}'")
+                - norm.link
+              - else      
+                -# norm.link("#{gene} (#{norm.name})", nil)
+                - norm.link("#{gene} (#{norm.name})")
+          - sentence.restore
+
+  %input(type="submit")

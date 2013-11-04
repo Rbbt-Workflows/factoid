@@ -1,0 +1,36 @@
+%header== Done with article #{pmid}
+
+- kb = KnowledgeBase.new user
+- organisms = kb.pmid_organisms pmid
+
+- article = PMID.setup(pmid)
+- sentences = article.sentences
+- sentence_index = Segment.index(sentences)
+
+- organisms.each do |organism|
+  %h3== Mentions for #{Organism.scientific_name(organism)}
+  - mentions = kb.pmid_organism_mentions [pmid, organism]
+  %dl
+  - mentions.each do |mention|
+    - format, code = mention.code.split(":")
+    - format ||= "Ensembl Gene ID"
+    - gene = Gene.setup(code, format, organism)
+    - sentence = sentence_index[mention.range].first
+    - sentence
+    %dt
+      = gene.link
+    %dd
+      - if sentence
+        = Transformed.transform(sentence, [mention]) do |gene|
+          - if code.nil?
+            - gene.html
+          - else
+            - norm =  Gene.setup(code, format, organism)
+            - if norm.name === gene
+              -# norm.link(nil, nil, :html_link_extra_attrs => "title='#{gene}'")
+              - norm.link
+            - else      
+              - norm.link("#{gene} (#{norm.name})")
+        - sentence.restore
+
+

@@ -1,0 +1,12 @@
+- if locals.include? :jobname or locals.include? "jobname"
+  = workflow_partial("partials/_job_control", workflow, task, locals)
+
+%header Abner
+
+%ul
+  - result.each do |mention|
+    - if String === mention.code and mention.code =~ /Ensembl Gene ID:./
+      - gene = Gene.setup(mention.code.split(":").last, "Ensembl Gene ID", "Hsa/jun2011")
+      %li= gene.link
+    - else
+      %li= mention
