@@ -1,37 +1,8 @@
 require 'rbbt/entity'
 require 'rbbt/entity/gene'
 
-#$pmid_organism = {}
-#$pmid_organism_mentions = {}
-#
-#get '/process/:pmid' do
-#  pmid = params[:pmid]
-#  if ($pmid_organism[pmid].nil? or params.include? 'update_species')
-#    workflow_render('select_species', Factoid, params)
-#  else
-#    organisms = $pmid_organism[pmid]
-#    pending_organisms = organisms.reject{|organism| $pmid_organism_mentions.include? organism}
-#    organism = pending_organisms.first
-#    if organism.nil?
-#    else
-#      workflow_render('select_organism_mentions', Factoid, params.merge(:organism => organism))
-#    end
-#  end
-#end
-
-#post '/select_species/:pmid' do
-#  pmid = params[:pmid]
-#  organisms = []
-#  all_organism = Organism.installable_organisms
-#  params.each do |key, value|
-#    if all_organism.include? key and value == 'on'
-#      organisms << key
-#    end
-#  end
-#  $pmid_organism[pmid] = organisms
-#  redirect File.join('/process', pmid)
-#end
-
+require 'rbbt/ner/linnaeus'
+Linnaeus.init
 
 class Sinatra::Base
   before do
